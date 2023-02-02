@@ -31,13 +31,15 @@ const handleErrors =(err)=>{
     return errors;
 }
 
+//token creating
 const maxAge= 3*24*60*60;
-const createToken = (id) =>{
-    return jwt.sign({id}, 'louay secret', {
+const createToken = (id, role) =>{
+    return jwt.sign({sub: id, role: role}, process.env.SECRET, {
         expiresIn: maxAge
     });
 }
 
+//requests
 const signup_get = ((req,res)=>{
     res.render('signup');
 })
@@ -46,11 +48,15 @@ const login_get = ((req,res)=>{
     res.render('login');
 })
 
+const admin_login_get = ((req,res)=>{
+    res.render('admin');
+})
+
 const signup_post = ( async (req,res)=>{
-    const { email, password }= req.body;
+    const { email, password, role }= req.body;
     try{
-        const user = await User.create({ email, password });
-        const token = createToken(user._id);
+        const user = await User.create({ email, password, role });
+        const token = createToken(user._id, user.role);
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge*1000 });
         res.status(201).json({ user: user._id });
     }
@@ -65,9 +71,9 @@ const login_post = ( async (req,res)=>{
 
     try{
         const user = await User.login(email, password);
-        const token = createToken(user._id);
+        const token = createToken(user._id, user.role);
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge*1000 });
-        res.status(200).json({ user: user._id });
+        res.status(200).json({ user: user._id, role: user.role });
     }
     catch(err){
         const errors = handleErrors(err);
@@ -76,7 +82,7 @@ const login_post = ( async (req,res)=>{
 })
 
 const logout_get = (req, res)=>{
-    res.cookie('jwt', '',{ maxAge: 1 });
+    res.cookie('jwt', '',{ maxAge: -1 });
     res.redirect('/');
 }
 
@@ -85,5 +91,6 @@ module.exports = {
     login_get,
     signup_post,
     login_post,
-    logout_get
+    logout_get,
+    admin_login_get
 }
