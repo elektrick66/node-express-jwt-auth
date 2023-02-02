@@ -8,6 +8,13 @@
     <h2>Smoothie Recipes</h2>
     <h3>By Ninjas For Ninjas</h3>
     <a href="/smoothies" class="btn">View Recipes</a>
+      <% if (user) {
+        if (user.role === 'admin'){ %>
+        <h3>role: <%= user.role %></h3>
+        <div><a href="/logout">Log out</a></div>
+      <% }} else { %>
+        <div>arja3 ghodwa</a></div>
+      <% } %>
   </div>
 </header>
 

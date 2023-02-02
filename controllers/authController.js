@@ -48,10 +48,6 @@ const login_get = ((req,res)=>{
     res.render('login');
 })
 
-const admin_login_get = ((req,res)=>{
-    res.render('admin');
-})
-
 const signup_post = ( async (req,res)=>{
     const { email, password, role }= req.body;
     try{
@@ -91,6 +87,5 @@ module.exports = {
     login_get,
     signup_post,
     login_post,
-    logout_get,
-    admin_login_get
+    logout_get
 }

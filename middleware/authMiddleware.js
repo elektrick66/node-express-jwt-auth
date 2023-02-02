@@ -37,7 +37,6 @@ const checkUser= (req, res, next)=>{
             else {
                 // console.log(decodedToken);
                 let user = await User.findById(decodedToken.sub);
-                let role = user.role;
                 res.locals.user = user;
                 next();
             }
